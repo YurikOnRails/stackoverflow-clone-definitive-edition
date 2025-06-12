@@ -1,24 +1,32 @@
-# README
+# Клон StackOverflow на Ruby on Rails
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Учебный проект — клон приложения StackOverflow, созданный на **Ruby on Rails 8.0.2** и **Ruby 3.2.6**. Основная цель — тренировка принципов **TDD** и **BDD** в разработке.
 
-Things you may want to cover:
+Этот проект пишу, чтобы практиковать написание чистого, понятного и поддерживаемого кода с применением современных технологий и лучших известных мне практик на 2025 год.
 
-* Ruby version
+## Используемые технологии
 
-* System dependencies
+- Ruby on Rails 8.0.2
+- Ruby 3.2.6
+- TailwindCSS
+- Flowbite
+- Vite Ruby
 
-* Configuration
+## Тестирование
 
-* Database creation
+- RSpec — модульное и поведенческое тестирование
+- FactoryBot — генерация тестовых данных
+- RuboCop и другие линтеры — контроль чистоты и читаемости кода
 
-* Database initialization
+## Принципы
 
-* How to run the test suite
+- Чистота и читаемость кода — приоритет
+- Полное покрытие тестами (TDD/BDD)
+- Применение лучших практик работы с Git
+- Использование современных подходов к разработке на Rails
 
-* Services (job queues, cache servers, search engines, etc.)
+## Цель проекта
 
-* Deployment instructions
-
-* ...
+- Практика тестирования и архитектуры Rails-приложений
+- Совершенствование навыков профессиональной разработки
+- Формирование устойчивого подхода к написанию качественного кода

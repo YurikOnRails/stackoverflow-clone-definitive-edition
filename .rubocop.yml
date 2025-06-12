@@ -76,6 +76,8 @@ Style/StringLiterals:
   EnforcedStyle: double_quotes   # Используем двойные кавычки для строк
   Exclude:
     - 'config/initializers/*'    # Исключаем инициализаторы
+  AutoCorrect: true              # Включаем автоматическое исправление
+  ConsistentQuotesInMultiline: true  # Обеспечиваем согласованность кавычек в многострочных строках
 
 Style/Documentation:
   Enabled: false    # Отключаем обязательную документацию классов/модулей

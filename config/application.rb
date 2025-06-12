@@ -1,4 +1,5 @@
 # encoding: utf-8
+# frozen_string_literal: true
 
 require_relative 'boot'
 
@@ -22,6 +23,6 @@ module StackoverflowCloneDefinitiveEdition
     config.encoding = 'utf-8'
 
     # Загружаем локали из вложенных директорий
-    config.i18n.load_path += Dir[Rails.root.join('config/locales/**/*.{rb,yml}')]
+    config.i18n.load_path += Rails.root.glob('config/locales/**/*.{rb,yml}')
   end
 end

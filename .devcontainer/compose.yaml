@@ -1,5 +1,6 @@
 version: '3.8'
 
+# Имя проекта, которое будет использоваться как префикс для контейнеров и сетей
 name: "stackoverflow_clone_definitive_edition"
 
 services:
@@ -8,7 +9,12 @@ services:
       context: ..
       dockerfile: .devcontainer/Dockerfile
     volumes:
-      - ../..:/workspaces:cached
+      # ВАЖНО: монтируем корневую директорию проекта в /workspaces
+      # Путь `..` корректен, так как compose.yaml находится в .devcontainer
+      # `cached` - это оптимизация для macOS и Windows, улучшающая производительность I/O
+      - ..:/workspaces:cached
+      # Именованные вольюмы для кеширования зависимостей.
+      # Это значительно ускоряет пересборку и перезапуск контейнера.
       - bundle:/usr/local/bundle
       - node_modules:/workspaces/${localWorkspaceFolderBasename}/node_modules
       - packs:/workspaces/${localWorkspaceFolderBasename}/public/packs
@@ -19,7 +25,9 @@ services:
       RAILS_MAX_THREADS: 5
       EDITOR: code
       DATABASE_URL: postgres://postgres:postgres@postgres:5432
+    # Запускаем контейнер от имени пользователя 'vscode'
     user: vscode
+    # Команда, которая не дает контейнеру завершиться после запуска
     command: sleep infinity
     depends_on:
       postgres:
@@ -36,7 +44,9 @@ services:
     image: postgres:16.1-alpine
     restart: unless-stopped
     volumes:
+      # Монтируем локальную директорию для хранения данных PG, чтобы они не терялись
       - ~/.postgres-data/stackoverflow_clone:/var/lib/postgresql/data
+      # Скрипты для инициализации базы данных при первом запуске
       - ./postgres-init:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_USER: postgres
@@ -47,6 +57,7 @@ services:
       - "5432:5432"
     networks:
       - development
+    # Проверка состояния сервиса. `rails-app` не запустится, пока PG не будет готов.
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -68,6 +79,7 @@ services:
     security_opt:
       - no-new-privileges:true
 
+# Определяем именованные вольюмы, используемые выше
 volumes:
   bundle:
     driver: local
@@ -78,6 +90,7 @@ volumes:
   rails_cache:
     driver: local
 
+# Определяем сеть для взаимодействия сервисов
 networks:
   development:
     driver: bridge

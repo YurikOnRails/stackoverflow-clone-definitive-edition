@@ -1,96 +1,100 @@
 version: '3.8'
 
-# Имя проекта, которое будет использоваться как префикс для контейнеров и сетей
-name: "stackoverflow_clone_definitive_edition"
-
 services:
-  rails-app:
+  # 1. Основной сервис с вашим Rails-приложением
+  app:
+    # Собираем образ на основе нашего Dockerfile
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
+    
+    # Монтируем код проекта в контейнер.
+    # `cached` - оптимизация для macOS и Windows для ускорения работы с файлами.
     volumes:
-      # ВАЖНО: монтируем корневую директорию проекта в /workspaces
-      # Путь `..` корректен, так как compose.yaml находится в .devcontainer
-      # `cached` - это оптимизация для macOS и Windows, улучшающая производительность I/O
       - ..:/workspaces:cached
       # Именованные вольюмы для кеширования зависимостей.
-      # Это значительно ускоряет пересборку и перезапуск контейнера.
-      - bundle:/usr/local/bundle
+      # Это значительно ускоряет перезапуск и пересборку контейнера.
+      - bundle_cache:/usr/local/bundle
       - node_modules:/workspaces/${localWorkspaceFolderBasename}/node_modules
-      - packs:/workspaces/${localWorkspaceFolderBasename}/public/packs
-      - rails_cache:/workspaces/${localWorkspaceFolderBasename}/tmp/cache
+
+    # Переменные окружения, необходимые для работы приложения.
     environment:
+      # Настройки для Rails
       RAILS_ENV: development
-      NODE_ENV: development
+      RAILS_LOG_TO_STDOUT: "true"
       RAILS_MAX_THREADS: 5
-      EDITOR: code
-      DATABASE_URL: postgres://postgres:postgres@postgres:5432
-    # Запускаем контейнер от имени пользователя 'vscode'
+      
+      # Настройки для JavaScript (Vite)
+      NODE_ENV: development
+      
+      # Настройки подключения к базе данных
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password # Используйте надежный пароль или localEnv
+      
+      # Настройки для системных тестов (Capybara)
+      SELENIUM_HOST: selenium
+      CAPYBARA_SERVER_PORT: 45678
+
+    # Запускаем контейнер от имени пользователя 'vscode' (создан в базовом образе)
     user: vscode
-    # Команда, которая не дает контейнеру завершиться после запуска
+
+    # Команда, которая не дает контейнеру завершиться. VS Code подключится к нему.
     command: sleep infinity
+
+    # Указываем, что наш сервис зависит от других
     depends_on:
       postgres:
-        condition: service_healthy
+        condition: service_healthy # Ждем, пока сервис postgres не будет полностью готов
       selenium:
-        condition: service_started
+        condition: service_started # Ждем, пока сервис selenium просто запустится
+    
+    # Все сервисы будут в одной сети для удобного взаимодействия по именам хостов
     networks:
       - development
+    
+    # Позволяет корректно обрабатывать сигналы завершения (Ctrl+C)
     init: true
-    security_opt:
-      - no-new-privileges:true
 
+  # 2. Сервис с базой данных PostgreSQL
   postgres:
-    image: postgres:16.1-alpine
+    image: postgres:16-alpine # Используем легковесный образ
     restart: unless-stopped
     volumes:
-      # Монтируем локальную директорию для хранения данных PG, чтобы они не терялись
-      - ~/.postgres-data/stackoverflow_clone:/var/lib/postgresql/data
-      # Скрипты для инициализации базы данных при первом запуске
-      - ./postgres-init:/docker-entrypoint-initdb.d
+      # Именованный вольюм для хранения данных БД между перезапусками
+      - postgres_data:/var/lib/postgresql/data
+    
     environment:
+      # Эти переменные должны совпадать с теми, что используются в сервисе 'app'
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: password # Используйте тот же пароль, что и выше
       POSTGRES_DB: stackoverflow_clone_definitive_edition_development
-      PGDATA: /var/lib/postgresql/data/pgdata
-    ports:
-      - "5432:5432"
-    networks:
-      - development
-    # Проверка состояния сервиса. `rails-app` не запустится, пока PG не будет готов.
+    
+    # Проверка состояния сервиса. 'app' не запустится, пока PG не будет готов.
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
+      interval: 5s
       timeout: 5s
-      retries: 5
-    user: postgres
-    security_opt:
-      - no-new-privileges:true
-
-  selenium:
-    image: selenium/standalone-chromium
-    restart: unless-stopped
-    shm_size: '2gb'
-    environment:
-      - SE_NODE_MAX_SESSIONS=4
-      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+      retries: 10
+    
     networks:
       - development
-    security_opt:
-      - no-new-privileges:true
 
-# Определяем именованные вольюмы, используемые выше
+  # 3. Сервис для системных тестов (Capybara)
+  selenium:
+    image: selenium/standalone-chromium:latest # Образ с Chrome
+    restart: unless-stopped
+    shm_size: '2gb' # Выделяем больше разделяемой памяти для стабильной работы Chrome
+    networks:
+      - development
+
+# Определяем именованные вольюмы, используемые выше.
+# Docker будет управлять их жизненным циклом.
 volumes:
-  bundle:
-    driver: local
+  postgres_data:
+  bundle_cache:
   node_modules:
-    driver: local
-  packs:
-    driver: local
-  rails_cache:
-    driver: local
 
 # Определяем сеть для взаимодействия сервисов
 networks:
   development:
-    driver: bridge

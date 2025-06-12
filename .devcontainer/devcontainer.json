@@ -1,113 +1,75 @@
-// Подробности о формате: https://containers.dev/implementors/json_reference/
 {
-  "name": "stackoverflow_clone_definitive_edition",
+  "name": "Rails App Dev Container",
 
-  // Указываем docker-compose файл для сборки и запуска окружения
+  // Указываем, что для окружения используется docker-compose
   "dockerComposeFile": "compose.yaml",
 
-  // Имя сервиса из compose.yaml, который будет являться основным dev-контейнером
-  "service": "rails-app",
+  // Имя сервиса из compose.yaml, который будет основным dev-контейнером
+  "service": "app",
 
   // Рабочая директория внутри контейнера
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 
-  // "Фичи" - это готовые компоненты для добавления функционала в контейнер.
-  // Это предпочтительный способ установки ПО, такого как Node.js, CLI утилит и т.д.
-  "features": {
-    // Добавляет GitHub CLI
-    "ghcr.io/devcontainers/features/github-cli:1": {},
-    // Добавляет зависимости для ActiveStorage (libvips)
-    "ghcr.io/rails/devcontainer/features/activestorage": {},
-    // Позволяет использовать Docker CLI внутри контейнера для управления Docker на хосте
-    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
-    // Устанавливает клиент PostgreSQL (psql и другие утилиты)
-    "ghcr.io/rails/devcontainer/features/postgres-client": {},
-    // Устанавливает Node.js и Yarn. Версия 20 будет установлена автоматически.
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "20"
-    }
-  },
+  // --- Команды жизненного цикла ---
 
-  // Настройки для VS Code, которые будут применены при подключении к контейнеру
+  // Команда, выполняемая один раз ПОСЛЕ создания контейнера.
+  // Идеально для установки зависимостей и инструментов разработки.
+  "postCreateCommand": "gem install rubocop brakeman rspec-rails && bundle install && yarn install",
+
+  // Команда, выполняемая КАЖДЫЙ РАЗ при запуске/перезапуске контейнера.
+  // Готовит базу данных к работе.
+  "postStartCommand": "bin/rails db:prepare",
+
+  // --- Конфигурация VS Code ---
   "customizations": {
     "vscode": {
-      // Список рекомендуемых расширений для разработки на Rails
+      // Рекомендуемые расширения для Rails-разработки
       "extensions": [
         "Shopify.ruby-lsp",
         "castwide.solargraph",
         "rebornix.ruby",
-        "kaiwood.endwise",
-        "aki77.rails-db-schema",
-        "sporto.rails-go-to-spec",
-        "vortizhe.simple-ruby-erb",
-        "wingrunr21.vscode-ruby",
         "bradlc.vscode-tailwindcss",
         "esbenp.prettier-vscode",
-        "formulahendry.auto-close-tag",
-        "formulahendry.auto-rename-tag",
         "eamodio.gitlens",
         "github.vscode-pull-request-github",
-        "streetsidesoftware.code-spell-checker",
         "ms-azuretools.vscode-docker",
-        "redhat.vscode-yaml",
-        "yzhang.markdown-all-in-one"
+        "standard.vscode-standard" // Для vite/javascript
       ],
-      // Настройки редактора
+      // Настройки редактора для единообразия в команде
       "settings": {
         "editor.formatOnSave": true,
         "editor.tabSize": 2,
-        "files.trimTrailingWhitespace": true,
-        "files.insertFinalNewline": true,
+        "[ruby]": {
+          "editor.defaultFormatter": "Shopify.ruby-lsp"
+        },
         "ruby.useBundler": true,
         "ruby.useLanguageServer": true,
         "ruby.lint": {
           "rubocop": true
-        },
-        "ruby.format": "rufo",
-        "[ruby]": {
-          "editor.defaultFormatter": "Shopify.ruby-lsp"
-        },
-        "[erb]": {
-          "editor.defaultFormatter": "aliariff.vscode-erb-beautify"
-        },
-        "files.associations": {
-          "*.erb": "erb"
         }
       }
     }
   },
 
-  // Переменные окружения, которые будут доступны внутри контейнера
-  "containerEnv": {
-    "CAPYBARA_SERVER_PORT": "45678",
-    "SELENIUM_HOST": "selenium",
-    "KAMAL_REGISTRY_PASSWORD": "${localEnv:KAMAL_REGISTRY_PASSWORD}",
-    "DB_HOST": "postgres",
-    "RAILS_MAX_THREADS": "5",
-    "EDITOR": "code",
-    "RAILS_ENV": "development",
-    "NODE_ENV": "development"
+  // "Фичи" - готовые компоненты для добавления функционала.
+  "features": {
+    // Устанавливает Node.js (версия LTS - 20) и Yarn. Необходимо для Vite.
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    },
+    // Добавляет GitHub CLI
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    // Позволяет использовать Docker CLI внутри контейнера для управления Docker на хосте
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
   },
 
-  // Проброс портов из контейнера на локальную машину
-  "forwardPorts": [3000, 5432],
+  // Проброс портов: 3000 для Rails-сервера, 5173 для Vite dev server
+  "forwardPorts": [3000, 5173],
 
   // Пользователь, от имени которого будет осуществляться работа в контейнере
   "remoteUser": "vscode",
-
-  // Команда, выполняемая на хост-машине ПЕРЕД созданием контейнера.
-  // Отлично подходит для создания директорий для volumes.
-  "initializeCommand": "mkdir -p ~/.postgres-data/stackoverflow_clone",
-
-  // Команды, выполняемые один раз ПОСЛЕ создания контейнера.
-  // Идеально для установки зависимостей.
-  "postCreateCommand": "bundle install && yarn install && bin/setup --skip-server",
-
-  // Команда, выполняемая КАЖДЫЙ РАЗ при запуске/перезапуске контейнера.
-  "postStartCommand": "bundle exec rails db:prepare",
-
-  // Настройки безопасности. `updateRemoteUserUID` синхронизирует UID пользователя
-  // внутри контейнера с UID пользователя на хосте, решая проблемы с правами на файлы.
-  "userEnvProbe": "loginInteractiveShell",
+  
+  // Синхронизирует UID пользователя на хосте и в контейнере.
+  // Решает 99% проблем с правами на файлы, созданные в контейнере.
   "updateRemoteUserUID": true
 }

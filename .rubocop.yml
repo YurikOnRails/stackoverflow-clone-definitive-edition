@@ -73,7 +73,7 @@ Style/FrozenStringLiteralComment:
   EnforcedStyle: always     # Всегда требовать комментарий
 
 Style/StringLiterals:
-  EnforcedStyle: single_quotes   # Используем одинарные кавычки для строк
+  EnforcedStyle: double_quotes   # Используем двойные кавычки для строк
   Exclude:
     - 'config/initializers/*'    # Исключаем инициализаторы
 

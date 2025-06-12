@@ -15,7 +15,9 @@ services:
       # Именованные вольюмы для кеширования зависимостей.
       # Это значительно ускоряет перезапуск и пересборку контейнера.
       - bundle_cache:/usr/local/bundle
-      - node_modules:/workspaces/${localWorkspaceFolderBasename}/node_modules
+      # ИЗМЕНЕНИЕ ЗДЕСЬ: Убрана переменная ${localWorkspaceFolderBasename}
+      # Теперь путь к node_modules соответствует реальной структуре внутри контейнера.
+      - node_modules:/workspaces/node_modules
 
     # Переменные окружения, необходимые для работы приложения.
     environment:

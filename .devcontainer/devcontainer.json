@@ -1,24 +1,37 @@
-// For format details, see https://containers.dev/implementors/json_reference/.
-// For config options, see the README at: https://github.com/devcontainers/templates/tree/main/src/ruby
+// Подробности о формате: https://containers.dev/implementors/json_reference/
 {
   "name": "stackoverflow_clone_definitive_edition",
+
+  // Указываем docker-compose файл для сборки и запуска окружения
   "dockerComposeFile": "compose.yaml",
+
+  // Имя сервиса из compose.yaml, который будет являться основным dev-контейнером
   "service": "rails-app",
+
+  // Рабочая директория внутри контейнера
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 
-  // Features to add to the dev container. More info: https://containers.dev/features.
+  // "Фичи" - это готовые компоненты для добавления функционала в контейнер.
+  // Это предпочтительный способ установки ПО, такого как Node.js, CLI утилит и т.д.
   "features": {
+    // Добавляет GitHub CLI
     "ghcr.io/devcontainers/features/github-cli:1": {},
+    // Добавляет зависимости для ActiveStorage (libvips)
     "ghcr.io/rails/devcontainer/features/activestorage": {},
+    // Позволяет использовать Docker CLI внутри контейнера для управления Docker на хосте
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    // Устанавливает клиент PostgreSQL (psql и другие утилиты)
     "ghcr.io/rails/devcontainer/features/postgres-client": {},
+    // Устанавливает Node.js и Yarn. Версия 20 будет установлена автоматически.
     "ghcr.io/devcontainers/features/node:1": {
       "version": "20"
     }
   },
 
+  // Настройки для VS Code, которые будут применены при подключении к контейнеру
   "customizations": {
     "vscode": {
+      // Список рекомендуемых расширений для разработки на Rails
       "extensions": [
         "Shopify.ruby-lsp",
         "castwide.solargraph",
@@ -39,6 +52,7 @@
         "redhat.vscode-yaml",
         "yzhang.markdown-all-in-one"
       ],
+      // Настройки редактора
       "settings": {
         "editor.formatOnSave": true,
         "editor.tabSize": 2,
@@ -63,6 +77,7 @@
     }
   },
 
+  // Переменные окружения, которые будут доступны внутри контейнера
   "containerEnv": {
     "CAPYBARA_SERVER_PORT": "45678",
     "SELENIUM_HOST": "selenium",
@@ -74,22 +89,25 @@
     "NODE_ENV": "development"
   },
 
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // Проброс портов из контейнера на локальную машину
   "forwardPorts": [3000, 5432],
 
-  // Uncomment to connect as root instead. More info: https://containers.dev/implementors/json_reference/#remoteUser.
+  // Пользователь, от имени которого будет осуществляться работа в контейнере
   "remoteUser": "vscode",
 
-  // Use 'initializeCommand' to run commands on the host before the container is created
+  // Команда, выполняемая на хост-машине ПЕРЕД созданием контейнера.
+  // Отлично подходит для создания директорий для volumes.
   "initializeCommand": "mkdir -p ~/.postgres-data/stackoverflow_clone",
 
-  // Use 'postCreateCommand' to run commands after the container is created.
+  // Команды, выполняемые один раз ПОСЛЕ создания контейнера.
+  // Идеально для установки зависимостей.
   "postCreateCommand": "bundle install && yarn install && bin/setup --skip-server",
 
-  // Use 'postStartCommand' to run commands after the container starts
+  // Команда, выполняемая КАЖДЫЙ РАЗ при запуске/перезапуске контейнера.
   "postStartCommand": "bundle exec rails db:prepare",
 
-  // Настройки безопасности
+  // Настройки безопасности. `updateRemoteUserUID` синхронизирует UID пользователя
+  // внутри контейнера с UID пользователя на хосте, решая проблемы с правами на файлы.
   "userEnvProbe": "loginInteractiveShell",
   "updateRemoteUserUID": true
 }

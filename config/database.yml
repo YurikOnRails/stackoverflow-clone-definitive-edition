@@ -18,11 +18,10 @@ default: &default
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  <% if ENV["DB_HOST"] %>
-  host: <%= ENV["DB_HOST"] %>
-  username: postgres
-  password: postgres
-  <% end %>
+  host: <%= ENV.fetch("DB_HOST") { "localhost" } %>
+  username: <%= ENV.fetch("POSTGRES_USER") { "postgres" } %>
+  password: <%= ENV.fetch("POSTGRES_PASSWORD") { "postgres" } %>
+  port: <%= ENV.fetch("DB_PORT") { 5432 } %>
 
 
 development:
@@ -83,12 +82,18 @@ test:
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 #
+staging:
+  <<: *default
+  database: stackoverflow_clone_definitive_edition_staging
+  username: <%= ENV["POSTGRES_USER"] %>
+  password: <%= ENV["POSTGRES_PASSWORD"] %>
+
 production:
   primary: &primary_production
     <<: *default
     database: stackoverflow_clone_definitive_edition_production
-    username: stackoverflow_clone_definitive_edition
-    password: <%= ENV["STACKOVERFLOW_CLONE_DEFINITIVE_EDITION_DATABASE_PASSWORD"] %>
+    username: <%= ENV["POSTGRES_USER"] %>
+    password: <%= ENV["POSTGRES_PASSWORD"] %>
   cache:
     <<: *primary_production
     database: stackoverflow_clone_definitive_edition_production_cache

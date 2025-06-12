@@ -1,3 +1,5 @@
+version: '3.8'
+
 name: "stackoverflow_clone_definitive_edition"
 
 services:
@@ -5,36 +7,77 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
-
     volumes:
-    - ../..:/workspaces:cached
-
-    # Overrides default command so things don't shut down after the process ends.
+      - ../..:/workspaces:cached
+      - bundle:/usr/local/bundle
+      - node_modules:/workspaces/${localWorkspaceFolderBasename}/node_modules
+      - packs:/workspaces/${localWorkspaceFolderBasename}/public/packs
+      - rails_cache:/workspaces/${localWorkspaceFolderBasename}/tmp/cache
+    environment:
+      RAILS_ENV: development
+      NODE_ENV: development
+      RAILS_MAX_THREADS: 5
+      EDITOR: code
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432
+    user: vscode
     command: sleep infinity
-
-    # Uncomment the next line to use a non-root user for all processes.
-    # user: vscode
-
-    # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
-    # (Adding the "ports" property to this file will not forward from a Codespace.)
     depends_on:
-    - selenium
-    - postgres
+      postgres:
+        condition: service_healthy
+      selenium:
+        condition: service_started
+    networks:
+      - development
+    init: true
+    security_opt:
+      - no-new-privileges:true
+
+  postgres:
+    image: postgres:16.1-alpine
+    restart: unless-stopped
+    volumes:
+      - ~/.postgres-data/stackoverflow_clone:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: stackoverflow_clone_definitive_edition_development
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    networks:
+      - development
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    user: postgres
+    security_opt:
+      - no-new-privileges:true
 
   selenium:
     image: selenium/standalone-chromium
     restart: unless-stopped
-
-  postgres:
-    image: postgres:16.1
-    restart: unless-stopped
-    networks:
-    - default
-    volumes:
-    - postgres-data:/var/lib/postgresql/data
+    shm_size: '2gb'
     environment:
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
+      - SE_NODE_MAX_SESSIONS=4
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+    networks:
+      - development
+    security_opt:
+      - no-new-privileges:true
 
 volumes:
-  postgres-data:
+  bundle:
+    driver: local
+  node_modules:
+    driver: local
+  packs:
+    driver: local
+  rails_cache:
+    driver: local
+
+networks:
+  development:
+    driver: bridge

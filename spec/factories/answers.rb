@@ -3,4 +3,4 @@ FactoryBot.define do
     body { 'Ответ на вопрос, не менее 10 символов.' }
     association :question
   end
-end 
+end

@@ -1,0 +1,39 @@
+ru:
+  common:
+    buttons:
+      submit: "Отправить"
+      cancel: "Отмена"
+      edit: "Редактировать"
+      delete: "Удалить"
+      back: "Назад"
+    messages:
+      confirm: "Вы уверены?"
+      created: "Успешно создано"
+      updated: "Успешно обновлено"
+      deleted: "Успешно удалено"
+    errors:
+      not_found: "Не найдено"
+      access_denied: "Доступ запрещен"
+      server_error: "Произошла ошибка сервера"
+  
+  time:
+    formats:
+      default: "%d.%m.%Y"
+      short: "%d %b"
+      long: "%d %B %Y"
+  
+  date:
+    formats:
+      default: "%d.%m.%Y"
+      short: "%d %b"
+      long: "%d %B %Y"
+    
+  activerecord:
+    models:
+    attributes:
+    errors:
+      messages:
+        record_invalid: "Ошибка валидации: %{errors}"
+        restrict_dependent_destroy:
+          has_one: "Невозможно удалить запись, существует зависимая запись: %{record}"
+          has_many: "Невозможно удалить запись, существуют зависимые записи: %{record}" 

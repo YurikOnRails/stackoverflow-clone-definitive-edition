@@ -28,4 +28,41 @@
 #       enabled: "ON"
 
 en:
-  hello: "Hello world"
+  common:
+    buttons:
+      submit: "Submit"
+      cancel: "Cancel"
+      edit: "Edit"
+      delete: "Delete"
+      back: "Back"
+    messages:
+      confirm: "Are you sure?"
+      created: "Successfully created"
+      updated: "Successfully updated"
+      deleted: "Successfully deleted"
+    errors:
+      not_found: "Not found"
+      access_denied: "Access denied"
+      server_error: "Server error occurred"
+  
+  time:
+    formats:
+      default: "%Y-%m-%d"
+      short: "%b %d"
+      long: "%B %d, %Y"
+  
+  date:
+    formats:
+      default: "%Y-%m-%d"
+      short: "%b %d"
+      long: "%B %d, %Y"
+    
+  activerecord:
+    models:
+    attributes:
+    errors:
+      messages:
+        record_invalid: "Validation failed: %{errors}"
+        restrict_dependent_destroy:
+          has_one: "Cannot delete record because a dependent %{record} exists"
+          has_many: "Cannot delete record because dependent %{record} exist"

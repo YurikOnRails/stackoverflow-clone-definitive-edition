@@ -51,15 +51,48 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # RSpec для тестирования Ruby on Rails приложений [https://github.com/rspec/rspec-rails]
+  gem 'rspec-rails', '~> 6.1.0'
+
+  # Создание тестовых данных [https://github.com/thoughtbot/factory_bot_rails]
+  gem 'factory_bot_rails'
+
+  # Генерация фейковых данных [https://github.com/ffaker/ffaker]
+  gem 'ffaker'
+
+  # Обнаружение N+1 запросов [https://github.com/flyerhzm/bullet]
+  gem 'bullet'
+
+  # Проверка покрытия кода тестами [https://github.com/simplecov-ruby/simplecov]
+  gem 'simplecov', require: false
 end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+
+  # Отладка и профилирование производительности [https://github.com/MiniProfiler/rack-mini-profiler]
+  gem 'rack-mini-profiler'
 end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
+  # Создание и управление скриншотами в тестах [https://github.com/mattheworiordan/capybara-screenshot]
+  gem 'capybara-screenshot'
+
+  # Мокирование и запись HTTP запросов [https://github.com/vcr/vcr]
+  gem 'vcr'
+  
+  # Мокирование HTTP запросов [https://github.com/bblimke/webmock]
+  gem 'webmock'
+
+  # Тестирование асинхронного поведения [https://github.com/rspec/rspec-wait]
+  gem 'rspec-wait'
+
+  # Матчеры для тестирования моделей и валидаций [https://github.com/thoughtbot/shoulda-matchers]
+  gem 'shoulda-matchers'
 end

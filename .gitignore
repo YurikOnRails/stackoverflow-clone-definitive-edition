@@ -32,6 +32,8 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+# Игнорируем файл с конфигурацией базы данных
+/config/database.yml
 
 /app/assets/builds/*
 !/app/assets/builds/.keep

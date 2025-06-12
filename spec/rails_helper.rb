@@ -21,7 +21,7 @@ require 'shoulda/matchers'
 # directory. Alternatively, in the individual `*_spec.rb` files, manually
 # require only the support files necessary.
 #
-Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
+Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |f| require f }
 
 # Checks for pending migrations and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove these lines.
@@ -77,7 +77,7 @@ Shoulda::Matchers.configure do |config|
     with.library :active_record     # Для тестирования моделей ActiveRecord
     with.library :active_model      # Для тестирования валидаций и других функций ActiveModel
     with.library :action_controller # Для тестирования контроллеров
-    
+
     # Указываем, что используем Rails
     with.library :rails
   end

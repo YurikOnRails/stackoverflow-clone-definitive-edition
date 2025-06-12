@@ -1,8 +1,148 @@
-# Omakase Ruby styling for Rails
+# Наследуем базовую конфигурацию от официального стиля Rails
+# https://github.com/rails/rubocop-rails-omakase
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
-# Overwrite or add rules to create your own house style
-#
-# # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
-# Layout/SpaceInsideArrayLiteralBrackets:
-#   Enabled: false
+# Подключаем дополнительные наборы правил через plugins
+plugins:
+  - rubocop-rails         # Правила для Rails приложений
+  - rubocop-performance   # Правила для оптимизации производительности
+  - rubocop-rspec        # Правила для тестов RSpec
+  - rubocop-packaging    # Правила для создания и упаковки гемов
+  - rubocop-thread_safety # Правила для обеспечения потокобезопасности
+
+# Основные настройки для всех правил
+AllCops:
+  TargetRubyVersion: 3.2    # Целевая версия Ruby
+  NewCops: enable           # Автоматически включать новые правила при обновлении Rubocop
+  # Исключаем файлы, которые не нужно проверять
+  Exclude:
+    - 'db/schema.rb'              # Автогенерируемая схема БД
+    - 'bin/*'                     # Исполняемые скрипты
+    - 'node_modules/**/*'         # Файлы node.js
+    - 'vendor/**/*'              # Сторонние библиотеки
+    - 'tmp/**/*'                 # Временные файлы
+    - 'log/**/*'                 # Логи
+    - 'public/**/*'              # Публичные файлы
+    - 'config/environments/*'     # Конфигурации окружений
+    - 'lib/tasks/auto_annotate_models.rake' # Автогенерируемые задачи
+
+# Включаем наборы правил
+Rails:
+  Enabled: true    # Включаем правила для Rails
+
+Performance:
+  Enabled: true    # Включаем правила для производительности
+
+RSpec:
+  Enabled: true    # Включаем правила для RSpec
+
+# Настройки форматирования кода
+Layout/LineLength:
+  Max: 100    # Максимальная длина строки
+  Exclude:    # Исключения, где можно превышать лимит
+    - 'bin/*'
+    - 'db/schema.rb'
+    - 'config/initializers/*'
+
+# Метрики кода
+Metrics/MethodLength:
+  Max: 15    # Максимальная длина метода в строках
+  Exclude:   # Исключения для тестов и задач
+    - 'spec/**/*'
+    - 'lib/tasks/**/*'
+
+Metrics/BlockLength:
+  Exclude:   # Разрешаем длинные блоки в специфических файлах
+    - 'spec/**/*'           # Тесты часто содержат длинные блоки describe/context
+    - 'lib/tasks/**/*'      # Rake задачи могут быть длинными
+    - 'config/routes.rb'    # Файл маршрутов может быть большим
+
+Metrics/ClassLength:
+  Max: 150    # Максимальная длина класса в строках
+  Exclude:
+    - 'spec/**/*'   # Тестовые классы могут быть длиннее
+
+Metrics/AbcSize:
+  Max: 20     # Максимальная ABC-метрика (мера сложности кода)
+  Exclude:
+    - 'spec/**/*'   # Исключаем тесты из проверки сложности
+
+# Стилистические правила
+Style/FrozenStringLiteralComment:
+  Enabled: true              # Требуем комментарий для замороженных строк
+  EnforcedStyle: always     # Всегда требовать комментарий
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes   # Используем одинарные кавычки для строк
+  Exclude:
+    - 'config/initializers/*'    # Исключаем инициализаторы
+
+Style/Documentation:
+  Enabled: false    # Отключаем обязательную документацию классов/модулей
+
+# Правила для массивов
+Style/WordArray:
+  MinSize: 3    # Используем %w для массивов строк размером от 3 элементов
+
+Style/SymbolArray:
+  MinSize: 3    # Используем %i для массивов символов размером от 3 элементов
+
+# Настройки для процентных литералов (%, %i, %w и т.д.)
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%': '()'     # Используем круглые скобки для всех процентных литералов
+    '%i': '()'
+    '%q': '()'
+    '%Q': '()'
+    '%r': '()'
+    '%s': '()'
+    '%w': '()'
+    '%W': '()'
+    '%x': '()'
+
+# Правила для RSpec тестов
+RSpec/DescribeClass:
+  Enabled: true    # Требуем, чтобы describe содержал реальный класс/модуль
+
+RSpec/MultipleExpectations:
+  Max: 3    # Максимальное количество expect в одном it блоке
+
+RSpec/ExampleLength:
+  Max: 15   # Максимальная длина тестового примера
+
+RSpec/NestedGroups:
+  Max: 3    # Максимальная глубина вложенности describe/context блоков
+
+RSpec/LetSetup:
+  Enabled: true    # Проверяем использование let!
+
+RSpec/EmptyLineAfterSubject:
+  Enabled: true    # Требуем пустую строку после subject
+
+RSpec/EmptyLineAfterFinalLet:
+  Enabled: true    # Требуем пустую строку после последнего let
+
+# Правила производительности
+Performance/StringReplacement:
+  Enabled: true    # Используем tr вместо gsub где возможно
+
+Performance/RedundantMatch:
+  Enabled: true    # Избегаем ненужного использования match
+
+Performance/RegexpMatch:
+  Enabled: true    # Используем оптимальные методы для регулярных выражений
+
+# Правила потокобезопасности
+ThreadSafety/NewThread:
+  Enabled: true    # Проверяем корректное создание новых потоков
+
+ThreadSafety/ClassInstanceVariable:
+  Enabled: true    # Проверяем использование instance variables в class methods
+
+# Правила для гемов
+Packaging/BundlerSetupInTests:
+  Enabled: true    # Проверяем корректность настройки Bundler в тестах
+
+Packaging/GemspecGit:
+  Enabled: true    # Проверяем использование Git в gemspec файлах
+

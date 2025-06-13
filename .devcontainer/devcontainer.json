@@ -16,7 +16,7 @@
 
   // Команда, выполняемая один раз ПОСЛЕ создания контейнера.
   // Идеально для установки зависимостей и инструментов разработки.
-  "postCreateCommand": "gem install rubocop brakeman rspec-rails && bundle install && yarn install",
+"postCreateCommand": "sudo chown vscode /workspaces/node_modules && gem install rubocop brakeman rspec-rails && bundle install && yarn install",
 
   // Команда, выполняемая КАЖДЫЙ РАЗ при запуске/перезапуске контейнера.
   // Готовит базу данных к работе.

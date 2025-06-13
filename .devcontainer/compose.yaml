@@ -30,7 +30,7 @@ services:
       NODE_ENV: development
       
       # Настройки подключения к базе данных
-      POSTGRES_HOST: postgres
+      DB_HOST: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password # Используйте надежный пароль или localEnv
       

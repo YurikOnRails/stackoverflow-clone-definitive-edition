@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class QuestionsController < ApplicationController
   before_action :find_question, only: %i(show edit update destroy)
 
@@ -45,6 +47,6 @@ class QuestionsController < ApplicationController
   end
 
   def question_params
-    params.require(:question).permit(:title, :body)
+    params.expect(question: [ :title, :body ])
   end
 end

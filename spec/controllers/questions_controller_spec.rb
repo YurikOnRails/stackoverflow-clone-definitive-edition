@@ -6,12 +6,12 @@ RSpec.describe QuestionsController, type: :controller do
   let(:question) { create(:question) }
 
   describe 'GET #index' do
-    let!(:question1) { FactoryBot.create(:question) }
-    let!(:question2) { FactoryBot.create(:question) }
+    let!(:first_question) { FactoryBot.create(:question) }
+    let!(:second_question) { FactoryBot.create(:question) }
 
     it 'populates an array of all questions' do
       get :index
-      expect(assigns(:questions)).to contain_exactly(question1, question2)
+      expect(assigns(:questions)).to contain_exactly(first_question, second_question)
     end
 
     it 'renders index view' do

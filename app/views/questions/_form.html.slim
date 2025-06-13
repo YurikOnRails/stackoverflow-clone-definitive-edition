@@ -1,0 +1,13 @@
+= form_with model: @question, local: true do |f|
+  - if @question.errors.any?
+    ul
+      - @question.errors.full_messages.each do |msg|
+        li = msg
+  div
+    = f.label :title, 'Заголовок'
+    = f.text_field :title
+  div
+    = f.label :body, 'Текст вопроса'
+    = f.text_area :body
+  div
+    = f.submit 

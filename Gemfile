@@ -110,4 +110,7 @@ group :test do
 
   # Матчеры для тестирования моделей и валидаций [https://github.com/thoughtbot/shoulda-matchers]
   gem "shoulda-matchers"
+
+  # Тестирование контроллеров [https://github.com/rails/rails-controller-testing]
+  gem "rails-controller-testing"
 end

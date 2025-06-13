@@ -1,2 +1,22 @@
 h1 = question.title
-p = question.body 
+p = question.body
+
+h2 Answers
+- if question.answers.any?
+  ul
+    - question.answers.each do |answer|
+      li = answer.body
+- else
+  p No answers yet
+
+h2 New Answer
+= form_with model: [question, Answer.new], local: true do |f|
+  - if @answer&.errors&.any?
+    ul
+      - @answer.errors.full_messages.each do |msg|
+        li = msg
+  div
+    = f.label :body, 'Answer text'
+    = f.text_area :body
+  div
+    = f.submit 'Add answer' 

@@ -68,7 +68,7 @@ group :development, :test do
   gem "brakeman", require: false
 
   # RSpec для тестирования Ruby on Rails приложений [https://github.com/rspec/rspec-rails]
-  gem "rspec-rails", "~> 6.1.0"
+  gem "rspec-rails", "~> 8.0.0"
 
   # Создание тестовых данных [https://github.com/thoughtbot/factory_bot_rails]
   gem "factory_bot_rails"

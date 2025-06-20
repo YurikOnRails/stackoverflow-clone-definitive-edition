@@ -1,3 +1,6 @@
+- if user_signed_in?
+  = link_to 'Logout', destroy_user_session_path, method: :delete
+
 h1 = @question.title
 p = @question.body
 
@@ -17,7 +20,7 @@ h2 Answers
 
 h2 New Answer
 - if user_signed_in?
-  = form_with model: [@question, Answer.new], local: true, id: 'new_answer' do |f|
+  = form_with model: [@question, @answer], local: true, id: 'new_answer' do |f|
     - if f.object.errors.any?
       .errors
         h4 Errors:
@@ -25,7 +28,7 @@ h2 New Answer
           - f.object.errors.full_messages.each do |msg|
             li = msg
     div
-      = f.label :body, 'Your answer'
+      = f.label :body, 'Body'
       = f.text_area :body
     div
       = f.submit 'Post answer'

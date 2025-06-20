@@ -1,25 +1,33 @@
 h1 = @question.title
 p = @question.body
 
+- if user_signed_in? && current_user == @question.user
+  = link_to 'Delete question', question_path(@question), method: :delete, data: { confirm: 'Are you sure?' }
+
 h2 Answers
 - if @question.answers.any?
   ul
     - @question.answers.each do |answer|
-      li = answer.body
+      li id="answer-#{answer.id}"
+        = answer.body
+        - if user_signed_in? && current_user == answer.user
+          = link_to 'Delete answer', question_answer_path(@question, answer), method: :delete, data: { confirm: 'Are you sure?' }
 - else
   p No answers yet.
 
 h2 New Answer
-= form_with model: [@question, Answer.new], local: true do |f|
-  - if f.object.errors.any?
-    .errors
-      h4 Errors:
-      ul
-        - f.object.errors.full_messages.each do |msg|
-          li = msg
-  div
-    = f.label :body, 'Your answer'
-    = f.text_area :body
-  div
-    = f.submit 'Post Your Answer'
-    
+- if user_signed_in?
+  = form_with model: [@question, Answer.new], local: true, id: 'new_answer' do |f|
+    - if f.object.errors.any?
+      .errors
+        h4 Errors:
+        ul
+          - f.object.errors.full_messages.each do |msg|
+            li = msg
+    div
+      = f.label :body, 'Your answer'
+      = f.text_area :body
+    div
+      = f.submit 'Post answer'
+- else
+  p You need to sign in or sign up before continuing.

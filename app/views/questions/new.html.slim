@@ -1,2 +1,10 @@
-h1 Новый вопрос
-= render 'form', @question 
+
+= render 'shared/errors', resource: @question
+
+= form_with model: @question do |f|
+  = f.label :title
+  = f.text_field :title
+  = f.label :body
+  = f.text_area :body
+  = f.submit 'Ask'
+  

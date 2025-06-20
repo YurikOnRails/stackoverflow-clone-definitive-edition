@@ -2,7 +2,13 @@
 
 FactoryBot.define do
   factory :answer do
-    body { 'Ответ на вопрос, не менее 10 символов.' }
+    association :user
     association :question
+
+    sequence(:body) { |n| "This is a test answer body, number #{n}, which is long enough." }
+
+    trait :invalid do
+      body { nil }
+    end
   end
 end

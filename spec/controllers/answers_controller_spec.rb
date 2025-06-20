@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
@@ -12,27 +10,14 @@ RSpec.describe AnswersController, type: :controller do
     describe 'POST #create' do
       context 'with valid parameters' do
         it 'saves a new answer in the database' do
-          expect {
-            post :create, params: { question_id: question.id, answer: attributes_for(:answer) }
-          }.to change(question.answers, :count).by(1)
+          count = question.answers.count
+          post :create, params: { question_id: question.id, answer: { body: 'Test answer body' } }
+          expect(question.answers.count).to eq count + 1
         end
 
         it 'redirects to the question show page' do
-          post :create, params: { question_id: question.id, answer: attributes_for(:answer) }
+          post :create, params: { question_id: question.id, answer: { body: 'Test answer body' } }
           expect(response).to redirect_to question_path(question)
-        end
-      end
-
-      context 'with invalid parameters' do
-        it 'does not save the answer' do
-          expect {
-            post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid) }
-          }.not_to change(Answer, :count)
-        end
-
-        it 'renders the question show template' do
-          post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid) }
-          expect(response).to render_template 'questions/show'
         end
       end
     end

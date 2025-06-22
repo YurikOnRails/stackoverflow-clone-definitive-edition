@@ -10,7 +10,7 @@ class AnswersController < ApplicationController
     @answer = @question.answers.new(answer_params.merge(user: current_user))
 
     if @answer.save
-      redirect_to question_path(@question), notice: "Your answer was successfully posted."
+      redirect_to question_path(@question), notice: t("create.success")
     else
       @answers = @question.answers.reload
       render "questions/show", status: :unprocessable_entity
@@ -19,7 +19,7 @@ class AnswersController < ApplicationController
 
   def destroy
     @answer.destroy
-    redirect_to question_path(@question), notice: "Answer was successfully deleted."
+    redirect_to question_path(@question), notice: t("destroy.success")
   end
 
   private
@@ -33,7 +33,7 @@ class AnswersController < ApplicationController
   end
 
   def authorize_author!
-    redirect_to question_path(@question), alert: "You are not authorized." unless current_user.id == @answer.user_id
+    redirect_to question_path(@question), alert: t("common.errors.access_denied") unless current_user.id == @answer.user_id
   end
 
   def answer_params

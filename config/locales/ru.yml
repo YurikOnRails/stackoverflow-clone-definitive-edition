@@ -15,7 +15,16 @@ ru:
       not_found: "Не найдено"
       access_denied: "Доступ запрещен"
       server_error: "Произошла ошибка сервера"
-  
+  answers:
+    create:
+      success: "Ваш ответ успешно опубликован."
+    destroy:
+      success: "Ответ успешно удалён."
+  questions:
+    create:
+      success: "Ваш вопрос успешно создан."
+    destroy:
+      success: "Вопрос успешно удалён."
   time:
     formats:
       default: "%d.%m.%Y"

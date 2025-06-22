@@ -24,7 +24,7 @@ class QuestionsController < ApplicationController
     @question = current_user.questions.new(question_params)
 
     if @question.save
-      redirect_to @question, notice: "Your question successfully created."
+      redirect_to @question, notice: t("create.success")
     else
       render :new
     end
@@ -40,7 +40,7 @@ class QuestionsController < ApplicationController
 
   def destroy
     @question.destroy
-    redirect_to questions_path, notice: "Question was successfully deleted."
+    redirect_to questions_path, notice: t("destroy.success")
   end
 
   private
@@ -50,7 +50,7 @@ class QuestionsController < ApplicationController
   end
 
   def authorize_author!
-    redirect_to root_path, alert: "You are not authorized." unless current_user.id == @question.user_id
+    redirect_to root_path, alert: t("common.errors.access_denied") unless current_user.id == @question.user_id
   end
 
   def question_params

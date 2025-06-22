@@ -63,6 +63,7 @@ RSpec.describe 'Questions', type: :request do
 
     describe 'PATCH #update with valid attributes' do
       let(:update_params) { { title: 'new title', body: 'new body text' } }
+
       before { patch question_path(question), params: { question: update_params } }
 
       it 'changes question attributes' do
@@ -78,6 +79,7 @@ RSpec.describe 'Questions', type: :request do
 
     describe 'PATCH #update with invalid attributes' do
       let(:invalid_question) { attributes_for(:question, :invalid) }
+
       before { patch question_path(question), params: { question: invalid_question } }
 
       it 'does not change question attributes' do

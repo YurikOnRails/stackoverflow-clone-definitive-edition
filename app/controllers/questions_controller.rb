@@ -24,7 +24,7 @@ class QuestionsController < ApplicationController
     @question = current_user.questions.new(question_params)
 
     if @question.save
-      redirect_to @question, notice: t('questions.create.success')
+      redirect_to @question, notice: t(".success")
     else
       render :new
     end
@@ -40,7 +40,7 @@ class QuestionsController < ApplicationController
 
   def destroy
     @question.destroy
-    redirect_to questions_path, notice: t('questions.destroy.success')
+    redirect_to questions_path, notice: t(".success")
   end
 
   private

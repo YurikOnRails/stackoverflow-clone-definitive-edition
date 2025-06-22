@@ -6,7 +6,7 @@ RSpec.describe 'Questions', type: :request do
   let(:user) { create(:user) }
   let(:question) { create(:question, user: user) }
 
-  context 'Authenticated user' do
+  context 'when authenticated user' do
     before { sign_in user }
 
     describe 'GET #new' do
@@ -33,59 +33,63 @@ RSpec.describe 'Questions', type: :request do
       end
     end
 
-    describe 'POST #create' do
-      context 'with valid attributes' do
-        it 'saves a new question in the database' do
-          expect { post questions_path, params: { question: attributes_for(:question) } }.to change(user.questions, :count).by(1)
-        end
+    describe 'POST #create with valid attributes' do
+      let(:question_params) { attributes_for(:question) }
+      let(:request) { post questions_path, params: { question: question_params } }
 
-        it 'redirects to show view' do
-          post questions_path, params: { question: attributes_for(:question) }
-          expect(response).to redirect_to assigns(:question)
-        end
+      it 'saves a new question in the database' do
+        expect { request }.to change(user.questions, :count).by(1)
       end
 
-      context 'with invalid attributes' do
-        it 'does not save the question' do
-          expect { post questions_path, params: { question: attributes_for(:question, :invalid) } }.not_to change(Question, :count)
-        end
-
-        it 're-renders new view' do
-          post questions_path, params: { question: attributes_for(:question, :invalid) }
-          expect(response).to render_template :new
-        end
+      it 'redirects to show view' do
+        request
+        expect(response).to redirect_to assigns(:question)
       end
     end
 
-    describe 'PATCH /questions/:id' do
-      context 'with valid attributes' do
-        before { patch question_path(question), params: { question: { title: 'new title', body: 'new body text' } } }
+    describe 'POST #create with invalid attributes' do
+      let(:invalid_question) { attributes_for(:question, :invalid) }
+      let(:request) { post questions_path, params: { question: invalid_question } }
 
-        it 'changes question attributes' do
-          question.reload
-          expect(question.title).to eq 'new title'
-          expect(question.body).to eq 'new body text'
-        end
-
-        it 'redirects to updated question' do
-          expect(response).to redirect_to question
-        end
+      it 'does not save the question' do
+        expect { request }.not_to change(Question, :count)
       end
 
-      context 'with invalid attributes' do
-        before { patch question_path(question), params: { question: attributes_for(:question, :invalid) } }
+      it 're-renders new view' do
+        request
+        expect(response).to render_template :new
+      end
+    end
 
-        it 'does not change question attributes' do
-          old_title = question.title
-          old_body = question.body
-          question.reload
-          expect(question.title).to eq old_title
-          expect(question.body).to eq old_body
-        end
+    describe 'PATCH #update with valid attributes' do
+      let(:update_params) { { title: 'new title', body: 'new body text' } }
+      before { patch question_path(question), params: { question: update_params } }
 
-        it 're-renders edit view' do
-          expect(response).to render_template :edit
-        end
+      it 'changes question attributes' do
+        question.reload
+        expect(question.title).to eq 'new title'
+        expect(question.body).to eq 'new body text'
+      end
+
+      it 'redirects to updated question' do
+        expect(response).to redirect_to question
+      end
+    end
+
+    describe 'PATCH #update with invalid attributes' do
+      let(:invalid_question) { attributes_for(:question, :invalid) }
+      before { patch question_path(question), params: { question: invalid_question } }
+
+      it 'does not change question attributes' do
+        old_title = question.title
+        old_body = question.body
+        question.reload
+        expect(question.title).to eq old_title
+        expect(question.body).to eq old_body
+      end
+
+      it 're-renders edit view' do
+        expect(response).to render_template :edit
       end
     end
 

@@ -31,7 +31,7 @@ group :development, :test do
   gem "rubocop-thread_safety", require: false
   gem "debug", platforms: %i(mri windows), require: "debug/prelude"
   gem "brakeman", require: false
-  gem "rspec-rails", "~> 6.1.0"
+  gem "rspec-rails", "~> 8.0.1"
   gem "factory_bot_rails"
   gem "ffaker"
   gem "bullet"

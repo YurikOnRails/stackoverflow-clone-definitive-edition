@@ -40,22 +40,23 @@ en:
       created: "Successfully created"
     errors:
       access_denied: "Access denied"
+
   answers:
     create:
       success: "Your answer was successfully posted."
     destroy:
       success: "Answer was successfully deleted."
+
   questions:
     create:
       success: "Your question successfully created."
     destroy:
       success: "Question was successfully deleted."
-      updated: "Successfully updated"
-      deleted: "Successfully deleted"
-    errors:
-      not_found: "Not found"
-      access_denied: "Access denied"
-      server_error: "Server error occurred"
+
+  errors:
+    not_found: "Not found"
+    access_denied: "Access denied"
+    server_error: "Server error occurred"
   
   time:
     formats:

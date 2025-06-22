@@ -10,7 +10,7 @@ class AnswersController < ApplicationController
     @answer = @question.answers.new(answer_params.merge(user: current_user))
 
     if @answer.save
-      redirect_to question_path(@question), notice: t("create.success")
+      redirect_to question_path(@question), notice: t(".success")
     else
       @answers = @question.answers.reload
       render "questions/show", status: :unprocessable_entity
@@ -19,7 +19,7 @@ class AnswersController < ApplicationController
 
   def destroy
     @answer.destroy
-    redirect_to question_path(@question), notice: t('answers.destroy.success')
+    redirect_to question_path(@question), notice: t(".success")
   end
 
   private

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-puts 'Cleaning database...'
+Rails.logger.debug 'Cleaning database...'
 Answer.destroy_all
 Question.destroy_all
 User.destroy_all
 
-puts 'Creating users...'
+Rails.logger.debug 'Creating users...'
 
 andrey = User.create!(
   email: 'andrey@gmail.com',
@@ -13,7 +13,7 @@ andrey = User.create!(
   password_confirmation: 'password'
 )
 
-random_users = 4.times.map do
+random_users = Array.new(4) do
   User.create!(
     email: FFaker::Internet.email,
     password: 'password',
@@ -21,21 +21,21 @@ random_users = 4.times.map do
   )
 end
 
-users = [andrey] + random_users
-puts 'Users created.'
+users = [ andrey ] + random_users
+Rails.logger.debug 'Users created.'
 
-puts 'Creating questions...'
+Rails.logger.debug 'Creating questions...'
 questions = users.flat_map do |user|
-  2.times.map do
+  Array.new(2) do
     user.questions.create!(
             title: FFaker::Lorem.sentence(5).delete_suffix('.'),
       body: FFaker::Lorem.paragraph
     )
   end
 end
-puts 'Questions created.'
+Rails.logger.debug 'Questions created.'
 
-puts 'Creating answers...'
+Rails.logger.debug 'Creating answers...'
 questions.each do |question|
   3.times do
     question.answers.create!(
@@ -44,6 +44,6 @@ questions.each do |question|
     )
   end
 end
-puts 'Answers created.'
+Rails.logger.debug 'Answers created.'
 
-puts 'Finished seeding!'
+Rails.logger.debug 'Finished seeding!'

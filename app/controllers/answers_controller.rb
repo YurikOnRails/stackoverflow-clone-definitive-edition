@@ -3,19 +3,20 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
   before_action :set_question
-  before_action :set_answer, only: %i[destroy show]
+  before_action :set_answer, only: %i(destroy show)
   before_action :authorize_author!, only: :destroy
 
+  def show; end
   def create
     @answer = @question.answers.new(answer_params.merge(user: current_user))
 
     respond_to do |format|
       if @answer.save
         format.turbo_stream
-        format.html { redirect_to question_path(@question), notice: t('.success') }
+        format.html { redirect_to question_path(@question), notice: t(".success") }
       else
         @answers = @question.answers.reload
-        format.html { render 'questions/show', status: :unprocessable_entity }
+        format.html { render "questions/show", status: :unprocessable_entity }
       end
     end
   end
@@ -25,7 +26,6 @@ class AnswersController < ApplicationController
     redirect_to question_path(@question), notice: t(".success")
   end
 
-  def show; end
 
   private
 

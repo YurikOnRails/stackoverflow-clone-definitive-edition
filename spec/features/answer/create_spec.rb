@@ -22,7 +22,7 @@ feature 'User can create answer on question page', %q(
   scenario 'Authenticated user creates answer with Turbo Stream' do
     sign_in(user)
     visit question_path(question)
-    
+
     fill_in 'Body', with: 'Test answer with Turbo Stream'
     click_on 'Post answer'
 

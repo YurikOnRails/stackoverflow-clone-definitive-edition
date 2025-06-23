@@ -3,7 +3,7 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
   before_action :set_question
-  before_action :set_answer, only: :destroy
+  before_action :set_answer, only: %i[destroy show]
   before_action :authorize_author!, only: :destroy
 
   def create
@@ -24,6 +24,8 @@ class AnswersController < ApplicationController
     @answer.destroy
     redirect_to question_path(@question), notice: t(".success")
   end
+
+  def show; end
 
   private
 

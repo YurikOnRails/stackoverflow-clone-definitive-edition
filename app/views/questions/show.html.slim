@@ -1,32 +1,48 @@
-- if user_signed_in?
-  = link_to 'Logout', destroy_user_session_path, method: :delete
-
-h1 = @question.title
-p = @question.body
-
-- if user_signed_in? && current_user == @question.user
-  = button_to 'Delete question', question_path(@question), 
-    method: :delete, 
-    form: { data: { turbo_confirm: 'Are you sure you want to delete this question?' } },
-    class: 'button-link'
-
-h2 Answers
-ul#answers
-  = render @answers
-
-h2 New Answer
-- if user_signed_in?
-  = form_with model: [@question, @answer], id: 'new_answer' do |f|
-    - if f.object.errors.any?
-      .errors
-        h4 Errors:
-        ul
-          - f.object.errors.full_messages.each do |msg|
-            li = msg
-    div
-      = f.label :body, 'Body'
-      = f.text_area :body
-    div
-      = f.submit 'Post answer'
-- else
-  p You need to sign in or sign up before continuing.
+.max-w-4xl.mx-auto.p-6
+  .mb-8
+    .flex.justify-between.items-start
+      h1.text-3xl.font-bold.text-gray-900.dark:text-white = @question.title
+      - if user_signed_in? && current_user == @question.user
+        = button_to question_path(@question), 
+          method: :delete, 
+          form: { data: { turbo_confirm: 'Are you sure you want to delete this question?' } },
+          class: 'text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 text-sm font-medium' do
+          | Delete question
+    
+    .prose.max-w-none.mt-4.text-gray-800.dark:text-gray-200
+      = simple_format(@question.body)
+  
+  .mt-12
+    h2.text-2xl.font-bold.text-gray-900.dark:text-white.mb-6 Answers
+    
+    #answers.space-y-6.mb-12
+      - if @answers.any?
+        = render @answers
+      - else
+        p.text-gray-500.dark:text-gray-400 No answers yet. Be the first to answer!
+  
+  - if user_signed_in?
+    .bg-gray-50.dark:bg-gray-800.rounded-lg.p-6
+      h3.text-xl.font-semibold.text-gray-900.dark:text-white.mb-4 Your Answer
+      = form_with model: [@question, @answer], id: 'new_answer', class: 'space-y-4' do |f|
+        - if f.object.errors.any?
+          .p-4.mb-4.text-red-700.bg-red-100.rounded-lg.dark:bg-red-200.dark:text-red-800
+            h4.font-medium Errors:
+            ul.list-disc.list-inside
+              - f.object.errors.full_messages.each do |msg|
+                li = msg
+        
+        .mb-4
+          = f.text_area :body, rows: 6, 
+            class: 'block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
+            placeholder: 'Write your answer here...'
+        
+        = f.submit 'Post Answer', class: 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800'
+  - else
+    .bg-yellow-50.dark:bg-yellow-900.dark:bg-opacity-20.p-4.rounded-lg.mt-6
+      p.text-yellow-700.dark:text-yellow-300
+        | You need to 
+        = link_to 'sign in', new_user_session_path, class: 'font-medium text-yellow-700 dark:text-yellow-300 hover:underline'
+        |  or 
+        = link_to 'sign up', new_user_registration_path, class: 'font-medium text-yellow-700 dark:text-yellow-300 hover:underline'
+        |  to answer this question.

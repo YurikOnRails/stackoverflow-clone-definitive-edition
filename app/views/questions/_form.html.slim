@@ -1,13 +1,16 @@
-= form_with model: @question, local: true do |f|
+= form_with model: @question, local: true, class: 'max-w-3xl mx-auto p-6 bg-white rounded-lg shadow dark:bg-gray-800' do |f|
   - if @question.errors.any?
-    ul
-      - @question.errors.full_messages.each do |msg|
-        li = msg
-  div
-    = f.label :title, 'Заголовок'
-    = f.text_field :title
-  div
-    = f.label :body, 'Текст вопроса'
-    = f.text_area :body
-  div
-    = f.submit 
+    .p-4 mb-4 text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800
+      ul.list-disc list-inside
+        - @question.errors.full_messages.each do |msg|
+          li = msg
+  
+  .mb-6
+    = f.label :title, 'Title', class: 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'
+    = f.text_field :title, class: 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500', placeholder: 'Enter your question title'
+  
+  .mb-6
+    = f.label :body, 'Question details', class: 'block mb-2 text-sm font-medium text-gray-900 dark:text-white'
+    = f.text_area :body, rows: 6, class: 'block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500', placeholder: 'Be specific and imagine you\'re asking a question to another person'
+  
+  = f.submit class: 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'

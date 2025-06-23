@@ -8,7 +8,7 @@ User.destroy_all
 Rails.logger.debug 'Creating users...'
 
 andrey = User.create!(
-  email: 'andrey@gmail.com',
+  email: 'andrey@example.com',
   password: 'password',
   password_confirmation: 'password'
 )

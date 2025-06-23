@@ -1,5 +1,16 @@
-h1 Questions
-ul
-  - @questions.each do |question|
-    li = link_to question.title, question_path(question)
-p= link_to 'Ask question', new_question_path
+.max-w-4xl.mx-auto.p-6
+  .flex.justify-between.items-center.mb-8
+    h1.text-2xl.font-bold.text-gray-900.dark:text-white Questions
+    = link_to 'Ask Question', new_question_path, class: 'text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800'
+  
+  - if @questions.any?
+    .space-y-4
+      - @questions.each do |question|
+        .p-6.bg-white.border.border-gray-200.rounded-lg.shadow.dark:bg-gray-800.dark:border-gray-700
+          h2.mb-2.text-xl.font-bold.tracking-tight.text-gray-900.dark:text-white
+            = link_to question.title, question_path(question), class: 'hover:text-blue-600 dark:hover:text-blue-400'
+          p.mb-3.font-normal.text-gray-700.dark:text-gray-400
+            = truncate(question.body, length: 200)
+  - else
+    .text-center.py-12
+      p.text-gray-500.dark:text-gray-400 No questions yet. Be the first to ask one!

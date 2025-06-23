@@ -19,6 +19,17 @@ feature 'User can create answer on question page', %q(
     expect(page).to have_content 'My helpful answer'
   end
 
+  scenario 'Authenticated user creates answer with Turbo Stream' do
+    sign_in(user)
+    visit question_path(question)
+    
+    fill_in 'Body', with: 'Test answer with Turbo Stream'
+    click_on 'Post answer'
+
+    expect(page).to have_content 'Test answer with Turbo Stream'
+    expect(page).to have_current_path(question_path(question))
+  end
+
   scenario 'Authenticated user submits empty answer', :js do
     sign_in(user)
     visit question_path(question)

@@ -8,19 +8,12 @@ p = @question.body
   = link_to 'Delete question', question_path(@question), method: :delete, data: { confirm: 'Are you sure?' }
 
 h2 Answers
-- if @question.answers.any?
-  ul
-    - @question.answers.each do |answer|
-      li id="answer-#{answer.id}"
-        = answer.body
-        - if user_signed_in? && current_user == answer.user
-          = link_to 'Delete answer', question_answer_path(@question, answer), method: :delete, data: { confirm: 'Are you sure?' }
-- else
-  p No answers yet.
+ul#answers
+  = render @answers
 
 h2 New Answer
 - if user_signed_in?
-  = form_with model: [@question, @answer], local: true, id: 'new_answer' do |f|
+  = form_with model: [@question, @answer], id: 'new_answer' do |f|
     - if f.object.errors.any?
       .errors
         h4 Errors:

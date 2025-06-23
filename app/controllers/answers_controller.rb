@@ -9,11 +9,14 @@ class AnswersController < ApplicationController
   def create
     @answer = @question.answers.new(answer_params.merge(user: current_user))
 
-    if @answer.save
-      redirect_to question_path(@question), notice: t(".success")
-    else
-      @answers = @question.answers.reload
-      render "questions/show", status: :unprocessable_entity
+    respond_to do |format|
+      if @answer.save
+        format.turbo_stream
+        format.html { redirect_to question_path(@question), notice: t('.success') }
+      else
+        @answers = @question.answers.reload
+        format.html { render 'questions/show', status: :unprocessable_entity }
+      end
     end
   end
 
